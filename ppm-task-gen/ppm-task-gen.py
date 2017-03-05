@@ -4,6 +4,7 @@ A script for generating the tasks for project-playbills-mark.
 import os
 import csv
 import json
+import errno
 import argparse
 import itertools
 
@@ -17,7 +18,7 @@ def makedir(path):
             raise
 
 
-def write_csv(path, data):
+def write_csv(path, data, headers):
     """Write the data to a csv file."""
     with open(path, 'wb') as f:
         writer = csv.writer(f)
@@ -30,7 +31,8 @@ def read_csv(path, questions):
     with open(path, 'rb') as f:
         reader = csv.reader(f)
         l = list(reader)
-        headers = l[0] + [questions[0][k] for k in sorted(questions[0])]
+        headers = l[0] + sorted(questions[0])
+        data = {}
         for r in l[1:]:
             row = [r + [q[k] for k in sorted(q)] for q in questions]
             data[r[4]] = data.get(r[4], []) + row
